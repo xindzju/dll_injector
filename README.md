@@ -1,49 +1,24 @@
 # DLL Injector
-
-
-### Implementation
-SetWindowsHookExW(WH_GETMESSAGE, functionAddress, dllToBeInjected, 0); It was originally published on https://www.apriorit.com/
-
-WH_GETMESSAGE: determine the type of hook
-functionAddress: determine the address of function(in the address space of your process)
-dllToBeInjected: identify the dll containing the functionAddress function
-0: indicates this is a global hook
-
-
-### Steps
-system check which type of hook is enabled
-dll main function is called with DLL_PROCESS_ATTACH parameter
-callbacks are inserted into the address space of target process
-
-### CreateRemoteThread
-invoking the LoadLibrary function within the thread of target process, since managing thread of another process is extremely complicated, so it better to create your own thread in it.
-HANDLE CreateRemoteThread(
-  HANDLE                 hProcess,
-  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
-  SIZE_T                 dwStackSize,
-  LPTHREAD_START_ROUTINE lpStartAddress,
-  LPVOID                 lpParameter,
-  DWORD                  dwCreationFlags,
-  LPDWORD                lpThreadId
-);
-
-hParameter: identify the process to which the new thread will belong 
-
-* Getting the handle of process we're going to hook
-HANDLE processHandle = OpenProcess(
-               PROCESS_CREATE_THREAD | // For CreateRemoteThread
-               PROCESS_VM_OPERATION  | // For VirtualAllocEx/VirtualFreeEx
-               PROCESS_VM_WRITE,       // For WriteProcessMemory
-               FALSE,                  // Don't inherit handles
-               processPid);            // PID of our target process 
-
-* Allocate some memory in the target process to pass the dll path
-  // How many bytes we need to hold the whole DLL path
-int bytesToAlloc = (1 + lstrlenW(injectLibraryPath)) * sizeof(WCHAR);
+### Features
+* Support Windows and Linux
+* Support X86, X86_64 and ARM
   
-// Allocate memory in the remote process for the DLL path
-LPWSTR remoteBufferForLibraryPath = LPWSTR(VirtualAllocEx(
-        processHandle, NULL, bytesToAlloc, MEM_COMMIT, PAGE_READWRITE));
+### Implementations Details
+* Windows: leverage Windows system API to inject a DLL into a running processes, there are mainly two ways
+  * SetWindowsHookExA/W:https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexa 
+  * CreateRemoteThread:https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread
+* Linux: 
+  * LD_PRELOAD:https://man7.org/linux/man-pages/man8/ld.so.8.html
+  * ptrace:https://man7.org/linux/man-pages/man2/ptrace.2.html
+
+
+### Building
+```
+git clone git@github.com:xindzju/dll_injector.git
+mkdir build & cd build
+cmake ..
+```
+
 
 
 

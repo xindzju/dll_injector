@@ -87,6 +87,7 @@ namespace dll_injector {
     }
 
     bool DLLInjector::InjectDll(const char* injectedDllName, const char* targetProcessName) {
+#ifdef _WIN32
         std::cout << "Inject dll by using the CreateRemoteThread function" << std::endl;
         m_injectedDLLName = injectedDllName;
         DWORD targetProcessID = GetProcessID(targetProcessName);
@@ -117,8 +118,9 @@ namespace dll_injector {
             std::cout << "Inject dll failed" << std::endl;
             return false;
         }
-
         return true;
+#else
+#endif
     }
 
     void DLLInjector::EjectDll() {
