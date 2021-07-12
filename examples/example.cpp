@@ -4,7 +4,7 @@
 int main(int argc, char** argv) {
     dll_injector::DLLInjector dllInjector;
     const char* injectedDllName = "injectedDllName.dll"; //replace with your dll name
-    const char* hookedFunctionName = "hookedFunctionName"; //replace with your exposed function name
+    const char* hookedFunctionName = "hookedFunctionName"; //replace with your exposed function name    
     std::cout << "Start to inject dll" << std::endl;
     /*for global hook, you need specify the exposed function name of your injected dll*/
     dllInjector.InjectDllGlobally(injectedDllName, hookedFunctionName);
