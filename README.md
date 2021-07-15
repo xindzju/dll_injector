@@ -19,6 +19,17 @@ mkdir build & cd build
 cmake ..
 ```
 
+### Reference:
+* DLL Injection:
+  * https://www.cnblogs.com/wf751620780/p/10730013.html
+  * https://blog.csdn.net/m0_37552052/article/details/81453591
+* Shellcode Injection
+  * 
+
+
+CPU Architecture
+X86 and ARM
+
 
 
 
